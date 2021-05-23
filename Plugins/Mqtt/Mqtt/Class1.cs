@@ -12,6 +12,7 @@ namespace Mqtt
     public class Class1
     {
         IMqttClient mqttClient;
+        string payload;
         string host;
         public Class1(string host)
         {
@@ -32,16 +33,21 @@ namespace Mqtt
             await mqttClient.ConnectAsync(options, CancellationToken.None);
         }
 
-        public async void Connected(MqttClientConnectedEventArgs e)
+        private async void Connected(MqttClientConnectedEventArgs e)
         {
             Console.WriteLine("Connected");
             await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("test").Build());
         }
 
-        public async void MessageReceived(MqttApplicationMessageReceivedEventArgs e)
+        private void MessageReceived(MqttApplicationMessageReceivedEventArgs e)
         {
-            var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+            payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
             Console.WriteLine(payload);
+        }
+
+        public string GetPayload()
+        {
+            return payload;
         }
     }
 }
